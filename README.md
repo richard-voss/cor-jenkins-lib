@@ -33,3 +33,18 @@ node {
   sh("git push --tags")
 }
 ```
+
+## Configure Shared Library
+
+If you have a minute, read the [excellent documentation](https://jenkins.io/doc/book/pipeline/shared-libraries/),
+if you don't:
+
+0. Go to *Manage Jenkins* > *Configure System*
+0. Look for *Global Pipeline Libraries* and press *Add*
+0. Enter `cor-jenkins-lib` as name
+0. Enter `master` (always up to date) or any specific version as default version
+0. Tick *Modern SCM* and then *Git* as retrieval option
+0. Enter `https://github.com/richard-voss/cor-jenkins-lib.git` as URL, no credentials
+0. *Save*
+
+Now the `library 'cor-jenkins-lib'` statement will work in every pipeline.
