@@ -13,24 +13,15 @@ in order to use it in a pipeline script:
 library 'cor-jenkins-lib'
 
 node {
-  def vc = cor.release()
-   
-  vc.tags(
-    sh(script: "git ${vc.gitFindTagsCommand}", returnStdout: true)
-  )
+  def versionHelper = cor.release(this)
   
-  vc.messages(
-    sh(script: "git ${vc.gitLogCommand}", returnStdout: true)
-  )
-  
-  def version = vc.nextVersion
+  def version = versionHelper.determineNextVersion()
   
   // the actual build, for example using maven
   sh("mvn versions:set -DnewVersion=${version} versions:commit")
   sh("mvn clean verify")
   
-  sh("git ${vc.gitNextTagCommand}")
-  sh("git push --tags")
+  versionHelper.tag(true)
 }
 ```
 
@@ -48,3 +39,17 @@ if you don't:
 0. *Save*
 
 Now the `library 'cor-jenkins-lib'` statement will work in every pipeline.
+
+## Configuring the VersionHelper
+
+You can adjust the behaviour of the VersionHelper, but most is 
+only useful _before_ calling `determineNextVersion()`.
+
+See [cor-jenkins](https://github.com/richard-voss/cor-jenkins)
+for details on these features:
+
+* `versionHelper.snapshot()` will switch to the snapshot strategy
+* `versionHelper.release()` will switch to the release strategy
+* `versionHelper.prefix("foo-")` will set the prefix used for git tag names
+* `versionHelper.triggerMinorChange([/compatible update/])` will configure they keywords for minor version changes
+* `versionHelper.triggerMajorChange([/breaking change/])` will configure they keywords for major version changes

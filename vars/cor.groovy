@@ -1,10 +1,10 @@
-@Grab('de.fruiture.cor:cor-jenkins:1.0.1')
-import de.fruiture.cor.jenkins.VersionCalculator
+import de.fruiture.cor.jenkins.BuildVersionHelper
 
-def release() {
-	return VersionCalculator.release("v")
+
+def release(steps) {
+    return new BuildVersionHelper(steps).release()
 }
 
-def snapshot() {
-	return VersionCalculator.snapshot("v")
+def snapshot(steps) {
+    return new BuildVersionHelper(steps).snapshot()
 }
